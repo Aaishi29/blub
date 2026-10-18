@@ -11,6 +11,7 @@
       "DOM.Iterable"
     ],
     "skipLibCheck": true,
+    "noEmitOnError": false,
     "moduleResolution": "bundler",
     "isolatedModules": true,
     "moduleDetection": "force",
