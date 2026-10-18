@@ -2,7 +2,7 @@
 
 Blub turns a short note about your day into a dive. Pick a mood or write or speak a few words, and Blub takes you to the part of the sea that matches how you feel, where you meet a creature, hear a soundscape, and get a gentle whisper back. Hard days go deeper, and they earn more points for showing up.
 
-Built for **Technica 2026** by Aaniya Dahiya and Aaishi Pranav.
+Built for **Technica 2026** by Aaishi Pranav and Aaniya Dahiya.
 
 ## Why we built it
 
