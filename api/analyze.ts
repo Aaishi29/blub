@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from '@google/genai';
-import { checkRateLimit, getClientIp, generateSmartDiveFallback } from './_shared';
+import { checkRateLimit, getClientIp, generateSmartDiveFallback } from './_shared.js';
 
 // Maximum allowed input text length (characters)
 const MAX_TEXT_LENGTH = 5000;

@@ -1,3 +1,3 @@
-import handler from './narrate';
+import handler from './narrate.js';
 
 export default handler;

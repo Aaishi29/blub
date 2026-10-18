@@ -1,4 +1,4 @@
-import { checkRateLimit, getClientIp } from './_shared';
+import { checkRateLimit, getClientIp } from './_shared.js';
 
 // Maximum allowed input text length for narration (characters)
 const MAX_NARRATION_LENGTH = 1000;

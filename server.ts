@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI, Type } from '@google/genai';
-import { checkRateLimit, getClientIp } from './api/_shared';
+import { checkRateLimit, getClientIp } from './api/_shared.js';
 
 dotenv.config();
 
