@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI, Type } from '@google/genai';
+import { checkRateLimit, getClientIp } from './api/_shared';
 
 dotenv.config();
 
@@ -176,9 +177,22 @@ function generateSmartDiveFallback(rawText: string) {
   };
 }
 
-// Gemini analysis endpoint
-app.post('/api/analyze-dive', async (req: Request, res: Response) => {
-  const { text } = req.body;
+// Gemini analysis endpoint (supports both /api/analyze and /api/analyze-dive)
+app.post(['/api/analyze', '/api/analyze-dive'], async (req: Request, res: Response) => {
+  const clientIp = getClientIp(req);
+  const rateLimit = checkRateLimit(clientIp, 30, 60000);
+  res.setHeader('X-RateLimit-Limit', '30');
+  res.setHeader('X-RateLimit-Remaining', rateLimit.remaining.toString());
+
+  if (!rateLimit.allowed) {
+    res.setHeader('Retry-After', Math.ceil((rateLimit.resetTime - Date.now()) / 1000).toString());
+    return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
+  }
+
+  const { text } = req.body || {};
+  if (typeof text === 'string' && text.length > 5000) {
+    return res.status(400).json({ error: 'Journal text exceeds maximum allowed length of 5000 characters.' });
+  }
 
   if (!process.env.GEMINI_API_KEY) {
     const fallback = generateSmartDiveFallback(text);
@@ -316,11 +330,25 @@ const FREE_PREMADE_VOICE_IDS = [
   'Xb7hH8MSUJpSbSDYk0k2', // Alice - Approachable & Clear
 ];
 
-// ElevenLabs TTS endpoint
-app.post('/api/tts', async (req: Request, res: Response) => {
-  const { text } = req.body;
+// ElevenLabs TTS endpoint (supports both /api/narrate and /api/tts)
+app.post(['/api/narrate', '/api/tts'], async (req: Request, res: Response) => {
+  const clientIp = getClientIp(req);
+  const rateLimit = checkRateLimit(clientIp, 40, 60000);
+  res.setHeader('X-RateLimit-Limit', '40');
+  res.setHeader('X-RateLimit-Remaining', rateLimit.remaining.toString());
+
+  if (!rateLimit.allowed) {
+    res.setHeader('Retry-After', Math.ceil((rateLimit.resetTime - Date.now()) / 1000).toString());
+    return res.status(429).json({ error: 'Too many narration requests. Please wait a moment.' });
+  }
+
+  const { text } = req.body || {};
   if (!text || typeof text !== 'string') {
     return res.status(400).json({ error: 'Text is required' });
+  }
+
+  if (text.length > 1000) {
+    return res.status(400).json({ error: 'Text exceeds maximum allowed length of 1000 characters.' });
   }
 
   const apiKey = process.env.ELEVENLABS_API_KEY;

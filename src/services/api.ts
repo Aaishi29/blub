@@ -231,7 +231,7 @@ export async function analyzeDive(text: string, _legacySlider?: number): Promise
   const timeoutId = setTimeout(() => controller.abort(), 8000);
 
   try {
-    const res = await fetch('/api/analyze-dive', {
+    const res = await fetch('/api/analyze', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -297,7 +297,7 @@ export async function narrateText(text: string): Promise<boolean> {
   }
 
   try {
-    const res = await fetch('/api/tts', {
+    const res = await fetch('/api/narrate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text }),
